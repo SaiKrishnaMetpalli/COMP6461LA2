@@ -9,6 +9,7 @@ public class HttpServerLibrary {
     private String directory_Path;
 	
 	public HttpServerLibrary(String[] arguments) {
+		//DEFAULT VALUES FOR SERVER
 		cmd_Arguments = arguments;
 		port_No=8080;
 		print_Debug_Message=false;
