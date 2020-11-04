@@ -86,7 +86,7 @@ public class ClientRequestHandler implements Runnable {
 		while ((line = b_reader.readLine()) != null) {
 
 			if (is_debug_on == true) {
-				System.out.println("Current Line from response: " + line);
+				System.out.println(line);
 			}
 
 			if (line.equals("")) {
@@ -147,12 +147,14 @@ public class ClientRequestHandler implements Runnable {
 
 			File requested_file = new File(dir_path + file_path.trim());
 
-			contentType = requested_file.toURL().openConnection().getContentType();
+			contentType = requested_file.toURI().toURL().openConnection().getContentType();
 
 			if (contentType.equals("text/plain")) {
 				contentDisposition = "inline";
+				main_response_data.append("Content-Disposition: inline").append("\r\n");
 			} else {
 				contentDisposition = "attachment; filename=" + dir_path + file_path + ";";
+				main_response_data.append("Content-Disposition: ").append(contentDisposition).append("\r\n");
 			}
 			if (is_debug_on) {
 				System.out.println("Content Disposition: " + contentDisposition);
