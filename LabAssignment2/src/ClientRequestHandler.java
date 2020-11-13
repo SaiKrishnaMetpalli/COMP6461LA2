@@ -113,7 +113,7 @@ public class ClientRequestHandler implements Runnable {
 			
 			if((method.equals("post")) && (line.contains("Content-Length"))) {				
 				line=b_Reader.readLine();
-				if(line.contains("Overwrite")) {
+				if(line.contains("Overwrite")) {					
 					is_Overwrite=true;
 					line=b_Reader.readLine();
 				}
@@ -177,11 +177,17 @@ public class ClientRequestHandler implements Runnable {
 				File requested_file = new File(dir_Path + file_Path.trim());
 				PrintWriter out = null;
 				if (requested_file.exists() && requested_file.isFile()) {
-					out = new PrintWriter(new FileOutputStream(requested_file, true));
+					if(is_Overwrite) {
+						out = new PrintWriter(new FileOutputStream(requested_file, false));
+					} else {
+						out = new PrintWriter(new FileOutputStream(requested_file, true));
+					}					
+					
 				} else {
 					out=new PrintWriter(requested_file);
 				}
 				out.append(data);
+				out.append("\n");
 				out.close();
 			}			
 		}
@@ -209,8 +215,8 @@ public class ClientRequestHandler implements Runnable {
 			respond.append("HTTP/1.1 40 Bad Request\r\n");
 		} else {			
 			respond.append("HTTP/1.1 200 OK\r\n");			
-			if (method.equals("POST"))
-				main_Response_Data.append("Post file successfully.");
+			if (method.equals("post"))
+				main_Response_Data.append("Posted file successfully.");
 		}
 		
 		respond.append("Connection: close\r\n");
