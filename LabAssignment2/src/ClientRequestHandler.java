@@ -234,9 +234,12 @@ public class ClientRequestHandler implements Runnable {
 		respond.append("Connection: close\r\n");
 		respond.append("Server: httpfs\n");
 		respond.append("Date: ").append(Calendar.getInstance().getTime().toString()).append("\r\n");
-		respond.append("Content-Type: ").append(content_Type).append("\r\n");
+		if(method.equals("get")) {
+			respond.append("Content-Type: ").append(content_Type).append("\r\n");
+			respond.append("Content-Disposition: ").append(content_Disposition).append("\r\n");
+		}		
 		respond.append("Content-Length: ").append(main_Response_Data.length()).append("\r\n");
-		respond.append("Content-Disposition: ").append(content_Disposition).append("\r\n");
+		
 		respond.append("\r\n");
 		respond.append(main_Response_Data.toString());
 
