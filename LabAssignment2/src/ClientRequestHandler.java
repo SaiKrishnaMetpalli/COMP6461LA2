@@ -130,14 +130,22 @@ public class ClientRequestHandler implements Runnable {
 		if (200 != status_Code)
 			return;
 
-		if (file_Path.length() > 3
-				&& ((file_Path.substring(0, 4).equals("./..") || file_Path.substring(0, 4).equals("/../")))) {
-			status_Code = 403;
-			main_Response_Data.append(
-					"Due to security reasons, It is not allowed to access other directories on this server!\r\n");
-			return;
+		int slash_count = 0;
+		for (int i = 0; i < file_Path.length(); i++) {
+			if (file_Path.charAt(i) == '/') {
+				slash_count += 1;
+			}
 		}
 
+		if (slash_count >= 2) {
+			if (file_Path.length() > 3
+					) {
+				status_Code = 403;
+				main_Response_Data.append(
+						"Due to security reasons, It is not allowed to access other directories on this server!\r\n");
+				return;
+			}
+		}
 		if (list_All_Files == true) {
 			listOfAllFiles(file_Path, main_Response_Data);
 		} else {
@@ -145,7 +153,7 @@ public class ClientRequestHandler implements Runnable {
 				File requested_file = new File(dir_Path + file_Path.trim());
 
 				content_Type = requested_file.toURI().toURL().openConnection().getContentType();
-				
+
 				if (requested_file.getName().endsWith(".json")) {
 					content_Type = "application/json";
 				}
